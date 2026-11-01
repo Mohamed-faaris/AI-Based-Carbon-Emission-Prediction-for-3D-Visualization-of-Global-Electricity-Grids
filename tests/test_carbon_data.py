@@ -35,7 +35,7 @@ class CarbonDatasetContractTests(unittest.TestCase):
         for station_id, record in self.emissions["stations"].items():
             history = record.get("co2_hist") or {}
             for year, value in history.items():
-                self.assertRegex(year, r"^20\\d{2}-\\d{2}$")
+                self.assertRegex(year, r"^20\d{2}-\d{2}$")
                 self.assertGreaterEqual(float(value), 0, station_id)
             series_count += bool(history)
         self.assertGreater(series_count, 0)
