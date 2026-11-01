@@ -1,6 +1,9 @@
 name: Import Power Map source
 
 on:
+  push:
+    paths:
+      - .github/workflows/import-power-map.yml
   workflow_dispatch:
     inputs:
       source_ref:
@@ -27,7 +30,7 @@ jobs:
 
       - name: Clone upstream Power Map
         env:
-          SOURCE_REF: ${{ inputs.source_ref }}
+          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
         run: |
           git clone --depth 1 --branch "$SOURCE_REF" https://github.com/reclaimchennai/power-map-india.git /tmp/power-map
 
