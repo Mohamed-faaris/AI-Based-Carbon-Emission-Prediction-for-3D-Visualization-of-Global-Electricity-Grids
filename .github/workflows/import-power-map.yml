@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir -p docs
           if [ -f /tmp/power-map/README.md ]; then cp /tmp/power-map/README.md docs/POWER-MAP-UPSTREAM.md; fi
-          rsync -a --exclude='.git/' --exclude='.github/' /tmp/power-map/ ./
+          rsync -a --exclude='.git/' --exclude='.github/' --exclude='README.md' /tmp/power-map/ ./
           git status --short
 
       - name: Commit imported source
