@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const fmt = (n,d=0) => Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-IN',{maximumFractionDigits:d}) : '—';
-const compact = n => Number.isFinite(Number(n)) ? new Intl.NumberFormat('en-IN',{notation:'compact',maximumFractionDigits:2}).format(n) : '—';
+const compact = n => n == null || n === '' || !Number.isFinite(Number(n)) ? '—' : new Intl.NumberFormat('en-IN',{notation:'compact',maximumFractionDigits:2}).format(n);
 const fuelNames = {coal:'Coal',lignite:'Lignite',gas:'Gas',diesel:'Diesel',naphtha:'Naphtha',oil:'Oil',hydro:'Hydro',nuclear:'Nuclear',solar:'Solar',wind:'Wind',biomass:'Biomass',waste:'Waste',pumped_storage:'Pumped storage'};
 let records=[], filtered=[], trendChart, fleetChart;
 const fuelColor = {coal:'#a45d37',lignite:'#c58a43',gas:'#5489a6',diesel:'#8b718f',naphtha:'#a58b4b',oil:'#8c705c',hydro:'#4b9a9b',nuclear:'#7a8f54',solar:'#d1a83b',wind:'#6b9c79',biomass:'#8c9c66',waste:'#9a9a9a',pumped_storage:'#7182a6'};
@@ -48,7 +48,7 @@ function render() {
   const weight=records.reduce((s,r)=>s+(Number(r.em.co2_t)||0),0);
   const runrate=records.reduce((s,r)=>s+(Number(r.em.est?.co2_t)||0),0);
   $('#total-co2').textContent=compact(baseline)+' t';
-  $('#avg-intensity').textContent=fmt(weight?weighted/weight:null,3)+' t/MWh';
+  $('#avg-intensity').textContent=fmt(records.length?meanIntensity/records.length:null,3)+' t/MWh';
   $('#station-count').textContent=fmt(records.length);
   $('#runrate-co2').textContent=compact(runrate)+' t';
   const fy=records.map(r=>r.em.co2_fy).filter(Boolean).sort().at(-1)||'CEA baseline';
@@ -74,7 +74,7 @@ async function init(){
   try{
     const [em,atlas]=await Promise.all([fetch('../data/emissions.json').then(r=>{if(!r.ok)throw Error('emissions.json '+r.status);return r.json()}),fetch('../data/plants.json').then(r=>{if(!r.ok)throw Error('plants.json '+r.status);return r.json()})]);
     window.EMISSIONS_META=em.meta;
-    records=atlas.plants.map(plant=>({plant,em:em.stations?.[plant.id]})).filter(r=>r.em&&Number.isFinite(Number(r.em.co2_t_per_mwh))&&Number.isFinite(Number(r.em.co2_t)));
+    records=atlas.plants.map(plant=>({plant,em:em.stations?.[plant.id]})).filter(r=>r.em&&r.em.co2_t_per_mwh!=null&&r.em.co2_t!=null&&Number.isFinite(Number(r.em.co2_t_per_mwh))&&Number.isFinite(Number(r.em.co2_t)));
     render();
   }catch(err){$('#data-meta').textContent='Unable to load emissions datasets: '+err.message;$('#station-rows').innerHTML='<tr><td colspan="7">Data unavailable. Serve the site over HTTP; do not open this file directly.</td></tr>';console.error(err)}
 }
