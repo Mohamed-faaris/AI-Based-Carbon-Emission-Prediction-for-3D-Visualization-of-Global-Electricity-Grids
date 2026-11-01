@@ -5,7 +5,7 @@ An integrated electricity-grid intelligence platform combining the AI carbon-emi
 ## Planned application areas
 - **Power Map** — existing 3D electricity-grid visualization, station data, transmission and fuel-supply context.
 - **Coal Tracker** — existing national coal overview, station stock, receipts/consumption, supply-chain map and station explorer.
-- **Carbon Emissions & AI Prediction** — prediction modelling and visualization, integrated with observed grid data.
+- **Carbon Intelligence** — station-level CEA CO₂ baseline, fuel breakdown, historical intensity and transparent linear trend projections. The current projection is a statistical baseline, not a trained AI model.
 - **Home Energy** — planned smart-meter power, energy and emissions dashboard.
 - **Home Air Quality** — planned ESP32/MQ-135 sensor history and indicator dashboard.
 
@@ -25,4 +25,4 @@ Open http://localhost:8000.
 The Power Map source is MIT-licensed. Its datasets have individual source licences and attribution requirements; see data/LICENSES.md, data/README.md, and CITATION.cff. Preserve dataset provenance and source citations when extending or republishing data.
 
 ## Integration status
-The source-import workflow is the first migration step. AI model integration, smart-home ingestion, unified navigation, automated tests and production deployment must be validated after the source is imported. No live deployment is claimed by this bootstrap.
+The Power Map source and datasets have been imported. The Carbon Intelligence dashboard is available at `/carbon/` and reads the imported `web/data/emissions.json` and `web/data/plants.json` datasets. Its historical trend projection is explicitly a statistical baseline, not a trained ML forecast. Smart-home ingestion, trained model validation, automated tests and production deployment remain future work.
