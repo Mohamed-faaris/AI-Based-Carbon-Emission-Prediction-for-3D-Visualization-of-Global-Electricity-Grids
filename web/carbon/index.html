@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carbon Intelligence · India Power Grid</title>
+<meta name="description" content="Explore CEA station-level carbon intensity, emissions estimates and transparent trend projections across India's electricity grid.">
+<meta name="theme-color" content="#f4f1ea">
+<link rel="stylesheet" href="carbon.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../" class="brand">POWER MAP <span>/ CARBON INTELLIGENCE</span></a>
+  <nav><a href="../">3D Power Map</a><a href="../coal/">Coal Tracker</a><a class="active" href="./">Carbon</a></nav>
+</header>
+<main>
+  <section class="intro">
+    <p class="eyebrow">INDIA · ELECTRICITY · EMISSIONS</p>
+    <h1>Carbon Intelligence</h1>
+    <p>Station-level CO₂ intensity, emissions estimates and explainable trend projections, connected to the Power Map dataset.</p>
+    <div class="source-line" id="data-meta">Loading CEA emissions data…</div>
+  </section>
+  <section class="metrics" aria-label="National emissions summary">
+    <article><span>Reported CO₂ baseline</span><strong id="total-co2">—</strong><small id="co2-period">CEA baseline database</small></article>
+    <article><span>Average intensity</span><strong id="avg-intensity">—</strong><small>Capacity/generation-weighted station data</small></article>
+    <article><span>Stations with CO₂ data</span><strong id="station-count">—</strong><small>Matched to Power Map station IDs</small></article>
+    <article><span>Run-rate estimates</span><strong id="runrate-co2">—</strong><small>Annualised from latest available DGR data</small></article>
+  </section>
+  <section class="layout">
+    <article class="panel chart-panel">
+      <div class="panel-head"><div><p class="eyebrow">HISTORICAL + PROJECTION</p><h2>CO₂ intensity trend</h2></div><label>Station<select id="station-select"><option value="">Select a station</option></select></label></div>
+      <p class="muted" id="trend-caption">Choose a station to inspect its CEA historical intensity and a simple trend projection.</p>
+      <div class="chart-box"><canvas id="trend-chart" aria-label="Historical and projected carbon intensity"></canvas></div>
+      <p class="method-note">Projection method: ordinary least-squares trend on the station's available annual CEA intensity observations. This is an experimental statistical baseline, not a trained machine-learning model or an official forecast.</p>
+    </article>
+    <article class="panel">
+      <p class="eyebrow">FLEET BREAKDOWN</p><h2>Estimated annual CO₂</h2>
+      <p class="muted">Station-level CEA baseline records. Only stations with numeric CO₂ totals are included.</p>
+      <div class="chart-box doughnut"><canvas id="fleet-chart" aria-label="CO2 totals by fuel category"></canvas></div>
+      <div id="fuel-legend" class="legend"></div>
+    </article>
+  </section>
+  <section class="panel table-panel">
+    <div class="panel-head"><div><p class="eyebrow">STATION EXPLORER</p><h2>Emissions by power station</h2></div>
+      <div class="filters"><input id="search" type="search" placeholder="Search station or state" aria-label="Search station or state"><select id="fuel-filter" aria-label="Filter by fuel"><option value="">All fuels</option></select></div>
+    </div>
+    <p class="muted" id="table-summary"></p>
+    <div class="table-wrap"><table><thead><tr><th>Station</th><th>State</th><th>Fuel</th><th>CO₂ intensity</th><th>CO₂ baseline</th><th>Run-rate estimate</th><th>SO₂ / FGD status</th></tr></thead><tbody id="station-rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div>
+  </section>
+  <section class="disclaimer">
+    <strong>Data interpretation</strong>
+    <p>CEA baseline values and derived estimates are not interchangeable. CO₂ baseline figures are attributed to the CEA CO₂ Baseline Database. Run-rate values and SO₂/NOx/PM values are estimates with assumptions documented in the source data. Missing values mean unavailable or unmatched data, not zero emissions.</p>
+    <p>Historical trends use only observed annual intensity points. The projected values are a transparent linear trend baseline and must not be presented as measured emissions.</p>
+    <div id="sources"></div>
+  </section>
+</main>
+<script type="module" src="carbon.js"></script>
+</body></html>
