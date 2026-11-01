@@ -1,0 +1,48 @@
+name: Import Power Map source
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Power Map source branch or tag
+        required: true
+        default: main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-power-map
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Clone upstream Power Map
+        env:
+          SOURCE_REF: ${{ inputs.source_ref }}
+        run: |
+          git clone --depth 1 --branch "$SOURCE_REF" https://github.com/reclaimchennai/power-map-india.git /tmp/power-map
+
+      - name: Import upstream application and datasets
+        run: |
+          mkdir -p docs
+          if [ -f /tmp/power-map/README.md ]; then cp /tmp/power-map/README.md docs/POWER-MAP-UPSTREAM.md; fi
+          rsync -a --exclude='.git/' --exclude='.github/' /tmp/power-map/ ./
+          git status --short
+
+      - name: Commit imported source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "No upstream changes to import."; exit 0; fi
+          git commit -m "Import Power Map India application and datasets"
+          git push origin HEAD:main
